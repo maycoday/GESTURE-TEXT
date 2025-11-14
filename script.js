@@ -11,6 +11,169 @@ closeTeamModal.addEventListener('click', () => teamModal.classList.add('hidden')
 closeTeamModalBtn.addEventListener('click', () => teamModal.classList.add('hidden'));
 teamModal.addEventListener('click', e => { if (e.target === teamModal) teamModal.classList.add('hidden'); });
 
+// --- Settings Modal ---
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsModal = document.getElementById('settingsModal');
+const closeSettingsModal = document.getElementById('closeSettingsModal');
+const closeSettingsModalBtn = document.getElementById('closeSettingsModalBtn');
+
+settingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
+closeSettingsModal.addEventListener('click', () => settingsModal.classList.add('hidden'));
+closeSettingsModalBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+settingsModal.addEventListener('click', e => { if (e.target === settingsModal) settingsModal.classList.add('hidden'); });
+
+// --- Gesture Guide Modal ---
+const gestureGuideBtn = document.getElementById('gestureGuideBtn');
+const gestureGuideModal = document.getElementById('gestureGuideModal');
+const closeGestureGuideModal = document.getElementById('closeGestureGuideModal');
+const closeGestureGuideModalBtn = document.getElementById('closeGestureGuideModalBtn');
+
+gestureGuideBtn.addEventListener('click', () => {
+  settingsModal.classList.add('hidden'); // Close settings first
+  gestureGuideModal.classList.remove('hidden');
+});
+closeGestureGuideModal.addEventListener('click', () => gestureGuideModal.classList.add('hidden'));
+closeGestureGuideModalBtn.addEventListener('click', () => gestureGuideModal.classList.add('hidden'));
+gestureGuideModal.addEventListener('click', e => { if (e.target === gestureGuideModal) gestureGuideModal.classList.add('hidden'); });
+
+// --- Features Modal ---
+const featuresBtn = document.getElementById('featuresBtn');
+const featuresModal = document.getElementById('featuresModal');
+const closeFeaturesModal = document.getElementById('closeFeaturesModal');
+const closeFeaturesModalBtn = document.getElementById('closeFeaturesModalBtn');
+
+featuresBtn.addEventListener('click', () => {
+  settingsModal.classList.add('hidden'); // Close settings first
+  featuresModal.classList.remove('hidden');
+});
+closeFeaturesModal.addEventListener('click', () => featuresModal.classList.add('hidden'));
+closeFeaturesModalBtn.addEventListener('click', () => featuresModal.classList.add('hidden'));
+featuresModal.addEventListener('click', e => { if (e.target === featuresModal) featuresModal.classList.add('hidden'); });
+
+// --- Save Settings Functionality ---
+const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+const sensitivitySelect = document.getElementById('sensitivitySelect');
+const qualitySelect = document.getElementById('qualitySelect');
+const mirrorToggle = document.getElementById('mirrorToggle');
+const autoSaveToggle = document.getElementById('autoSaveToggle');
+const soundToggle = document.getElementById('soundToggle');
+
+// Apply mirror setting function
+const applyMirrorSetting = () => {
+  const mirrorEnabled = mirrorToggle ? mirrorToggle.checked : true; // Default to true
+  
+  if (mirrorEnabled) {
+    cameraCanvas.style.transform = 'scaleX(-1)';
+  } else {
+    cameraCanvas.style.transform = 'scaleX(1)';
+  }
+};
+
+// Load saved settings on page load
+const loadSettings = () => {
+  const settings = JSON.parse(localStorage.getItem('gestureTextSettings') || '{}');
+  
+  if (settings.sensitivity) sensitivitySelect.value = settings.sensitivity;
+  if (settings.quality) qualitySelect.value = settings.quality;
+  if (settings.mirror !== undefined) mirrorToggle.checked = settings.mirror;
+  if (settings.autoSave !== undefined) autoSaveToggle.checked = settings.autoSave;
+  if (settings.sound !== undefined) soundToggle.checked = settings.sound;
+  
+  // Apply mirror setting
+  applyMirrorSetting();
+};
+
+// Save settings function
+const saveSettings = () => {
+  const settings = {
+    sensitivity: parseFloat(sensitivitySelect.value),
+    quality: parseInt(qualitySelect.value),
+    mirror: mirrorToggle.checked,
+    autoSave: autoSaveToggle.checked,
+    sound: soundToggle.checked,
+    timestamp: new Date().toISOString()
+  };
+  
+  localStorage.setItem('gestureTextSettings', JSON.stringify(settings));
+  
+  // Apply settings immediately
+  if (hands) {
+    hands.setOptions({
+      maxNumHands: 4,
+      modelComplexity: 1,
+      minDetectionConfidence: settings.sensitivity,
+      minTrackingConfidence: settings.sensitivity
+    });
+  }
+  
+  // Apply mirror setting
+  applyMirrorSetting();
+  
+  // Show success feedback
+  const originalText = saveSettingsBtn.innerHTML;
+  saveSettingsBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Settings Saved!';
+  saveSettingsBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+  
+  // Play success sound if enabled
+  if (settings.sound) {
+    playNotificationSound('success');
+  }
+  
+  setTimeout(() => {
+    saveSettingsBtn.innerHTML = originalText;
+    saveSettingsBtn.style.background = '';
+    settingsModal.classList.add('hidden');
+  }, 1500);
+};
+
+// Sound feedback function
+const playNotificationSound = (type) => {
+  if (!soundToggle.checked) return;
+  
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  if (type === 'success') {
+    oscillator.frequency.value = 800;
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.3);
+  }
+};
+
+// Auto-save text function
+const autoSaveText = (text) => {
+  if (!autoSaveToggle.checked || !text || text === 'Recognized text will appear here...') return;
+  
+  const savedTexts = JSON.parse(localStorage.getItem('gestureTextHistory') || '[]');
+  savedTexts.unshift({
+    text: text,
+    timestamp: new Date().toISOString(),
+    id: Date.now()
+  });
+  
+  // Keep only last 50 entries
+  if (savedTexts.length > 50) {
+    savedTexts.splice(50);
+  }
+  
+  localStorage.setItem('gestureTextHistory', JSON.stringify(savedTexts));
+};
+
+// Event listeners
+saveSettingsBtn.addEventListener('click', saveSettings);
+
+// Real-time mirror toggle
+mirrorToggle.addEventListener('change', applyMirrorSetting);
+
+// Load settings on page load
+window.addEventListener('DOMContentLoaded', loadSettings);
+
 // --- Dark Mode ---
 const darkModeToggle = document.getElementById('darkModeToggle');
 const html = document.documentElement;
@@ -49,34 +212,65 @@ let recognitionInterval;
 
 startCameraBtn.addEventListener('click', async () => {
   try {
+    // Update status immediately
+    statusIndicator.classList.replace('bg-gray-400', 'bg-yellow-400');
+    statusText.textContent = "Initializing camera...";
+    
     if (!camera) {
-      // Set up camera with maximum quality
+      // Set up camera with optimized settings for faster initialization
       camera = new Camera(cameraView, {
         onFrame: async () => {
           await hands.send({ image: cameraView });
         },
-        width: 1920,  // Full HD width
-        height: 1080, // Full HD height
+        width: 1280,  // Reduced for faster startup
+        height: 720,  // 720p for better performance
         facingMode: "user"
       });
       
-      // Optimize video quality
+      // Pre-configure video element for immediate display
       cameraView.setAttribute('playsinline', 'true');
-      cameraView.style.filter = 'brightness(1.1) contrast(1.1)'; // Slightly enhance video
+      cameraView.setAttribute('autoplay', 'true');
+      cameraView.style.filter = 'brightness(1.05) contrast(1.05)';
+      
+      // Add event listeners for video loading states
+      cameraView.addEventListener('loadstart', () => {
+        statusText.textContent = "Loading camera feed...";
+      });
+      
+      cameraView.addEventListener('loadedmetadata', () => {
+        statusText.textContent = "Camera feed ready";
+      });
+      
+      cameraView.addEventListener('canplay', () => {
+        // Ensure canvas is properly sized when video is ready
+        cameraCanvas.width = cameraView.videoWidth || 1280;
+        cameraCanvas.height = cameraView.videoHeight || 720;
+        statusIndicator.classList.replace('bg-yellow-400', 'bg-green-400');
+        statusText.textContent = "Camera active - Hand tracking enabled";
+      });
     }
-    await camera.start();
     
-    // Show video and controls
+    // Start camera with timeout handling
+    const startPromise = camera.start();
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Camera startup timeout')), 10000)
+    );
+    
+    await Promise.race([startPromise, timeoutPromise]);
+    
+    // Show canvas only (not video) and controls
     cameraPlaceholder.classList.add('hidden');
-    cameraView.classList.remove('hidden');
-    cameraCanvas.classList.remove('hidden');
+    cameraCanvas.classList.remove('hidden'); // Only show canvas with gesture overlay
     startCameraBtn.classList.add('hidden');
     stopCameraBtn.classList.remove('hidden');
     toggleCameraBtn.classList.remove('hidden');
     captureBtn.classList.remove('hidden');
 
+    // Apply current mirror setting
+    applyMirrorSetting();
+
     // Update status
-    statusIndicator.classList.replace('bg-gray-400', 'bg-green-400');
+    statusIndicator.classList.replace('bg-yellow-400', 'bg-green-400');
     statusText.textContent = "Camera active - Hand tracking enabled";
   } catch (err) {
     console.error("Error accessing camera:", err);
@@ -92,8 +286,7 @@ stopCameraBtn.addEventListener('click', () => {
 
   // Reset UI
   cameraPlaceholder.classList.remove('hidden');
-  cameraView.classList.add('hidden');
-  cameraCanvas.classList.add('hidden');
+  cameraCanvas.classList.add('hidden'); // Only hide canvas
   startCameraBtn.classList.remove('hidden');
   stopCameraBtn.classList.add('hidden');
   toggleCameraBtn.classList.add('hidden');
@@ -324,7 +517,16 @@ hands.onResults((results) => {
       // Filter empty labels and show results
       const visible = labels.filter(l => l.length > 0);
       if (visible.length > 0) {
-        outputText.textContent = visible.join(' | ');
+        const newText = visible.join(' | ');
+        outputText.textContent = newText;
+        
+        // Auto-save if enabled
+        autoSaveText(newText);
+        
+        // Play sound feedback if enabled
+        if (soundToggle && soundToggle.checked) {
+          playNotificationSound('success');
+        }
       } else {
         // Keep default placeholder when nothing recognized
         outputText.textContent = 'Recognized text will appear here...';
@@ -339,17 +541,5 @@ hands.onResults((results) => {
 // Use Mediapipe's Camera helper to connect video -> Hands
 let camera;
 
-startCameraBtn.addEventListener("click", async () => {
-  if (!camera) {
-    camera = new Camera(cameraView, {
-      onFrame: async () => {
-        await hands.send({ image: cameraView });
-      },
-      width: 640,
-      height: 480
-    });
-  }
-  camera.start();
-  cameraCanvas.classList.remove("hidden"); // show canvas overlay
-});
+// Camera initialization is handled above in the main startCameraBtn event listener
 

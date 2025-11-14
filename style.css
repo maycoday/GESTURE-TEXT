@@ -1,28 +1,148 @@
 
  /* Custom styles not handled by Tailwind */
-.camera-feed {
-  aspect-ratio: 16/9;  /* Updated to match HD ratio */
-  background-color: #f3f4f6;
-  position: relative;
-  overflow: hidden;    /* Prevent overflow */
-  width: 100%;
-  max-width: 1280px;  /* Match camera resolution */
-  margin: 0 auto;     /* Center the feed */
+
+/* Glassmorphism styles */
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  transition: all 0.3s ease-in-out;
 }
 
-#cameraView, #cameraCanvas {
-  transform: scaleX(-1); /* Mirror both video and canvas */
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
+}
+
+.dark .glass-card {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .glass-card:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.glass-modal {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px 0 rgba(31, 38, 135, 0.5);
+}
+
+.dark .glass-modal {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px 0 rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px 0 rgba(102, 126, 234, 0.6);
+}
+
+.glass-button-secondary {
+  background: rgba(107, 114, 128, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.glass-button-secondary:hover {
+  background: rgba(75, 85, 99, 0.9);
+  transform: translateY(-1px);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+}
+
+.dark .glass-input {
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-checkbox {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass-checkbox {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.feature-card {
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 20px 40px 0 rgba(31, 38, 135, 0.6);
+}
+
+/* Enhanced camera feed with glassmorphism border */
+.camera-feed {
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+#cameraView {
+  transform: scaleX(-1); /* Always mirror the hidden video for processing */
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Changed to contain to prevent cropping */
-  background-color: #000; /* Add black background for letterboxing */
+  object-fit: cover;
+  background-color: #000;
+  opacity: 0; /* Keep hidden but functional for processing */
+}
+
+#cameraCanvas {
+  transform: scaleX(-1); /* Default mirror state, controlled by settings */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: #000;
+  transition: transform 0.3s ease-in-out; /* Smooth mirror toggle */
 }
 
 .dark .camera-feed {
-  background-color: #1f2937;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .text-output {
   min-height: 200px;

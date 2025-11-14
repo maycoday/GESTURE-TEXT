@@ -41,7 +41,7 @@
             <i class="fas fa-moon text-gray-700 dark:text-gray-300 dark:hidden"></i>
             <i class="fas fa-sun text-yellow-300 hidden dark:block"></i>
           </button>
-          <button class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition mr-2">
+          <button id="settingsBtn" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition mr-2">
             <i class="fas fa-cog mr-2"></i>Settings
           </button>
           <button id="aboutUsBtn" class="px-4 py-2 bg-accent text-white rounded-md hover:bg-blue-600 transition">
@@ -70,7 +70,7 @@
                   <canvas id="cameraCanvas" class="w-full h-full object-cover hidden"></canvas>
                   <div id="cameraPlaceholder" class="text-center p-6">
                     <i class="fas fa-camera text-4xl text-gray-400 dark:text-gray-500 mb-3"></i>
-                    <p class="text-gray-500 dark:text-gray-400">Camera feed will appear here</p>
+                    <p class="text-gray-500 dark:text-gray-400">Camera feed with gesture tracking will appear here</p>
                     <button id="startCameraBtn" class="mt-4 px-4 py-2 bg-accent text-white rounded-md hover:bg-blue-600 transition">
                       <i class="fas fa-play mr-2"></i>Start Camera
                     </button>
@@ -180,29 +180,340 @@
           <button id="closeTeamModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
+          <div class="glass-card p-6 rounded-lg transform hover:scale-105 transition-transform">
             <div class="flex items-center mb-4">
-              <div class="w-16 h-16 rounded-full bg-accent flex items-center justify-center text-white text-2xl font-bold mr-4">MD</div>
+              <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold mr-4 shadow-lg">MD</div>
               <div>
                 <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Mayank Dantre</h4>
-                <p class="text-accent">AI/ML Engineer</p>
+                <p class="text-accent font-medium">AI/ML Engineer & Tech Visionary</p>
               </div>
             </div>
-            <p class="text-gray-600 dark:text-gray-300">Specializes in computer vision and gesture recognition algorithms. Leads our machine learning initiatives.</p>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Passionate about revolutionizing human-computer interaction through cutting-edge computer vision and gesture recognition algorithms. With expertise in MediaPipe, TensorFlow, and real-time AI processing, Mayank transforms complex machine learning concepts into accessible, user-friendly applications that bridge the gap between technology and accessibility.</p>
+            <div class="mt-4 flex space-x-2">
+              <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded-full">Computer Vision</span>
+              <span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs rounded-full">AI/ML</span>
+              <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs rounded-full">MediaPipe</span>
+            </div>
           </div>
-          <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
+          <div class="glass-card p-6 rounded-lg transform hover:scale-105 transition-transform">
             <div class="flex items-center mb-4">
-              <div class="w-16 h-16 rounded-full bg-accent flex items-center justify-center text-white text-2xl font-bold mr-4">SD</div>
+              <div class="w-16 h-16 rounded-full bg-gradient-to-r from-pink-500 to-red-600 flex items-center justify-center text-white text-2xl font-bold mr-4 shadow-lg">SD</div>
               <div>
                 <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Shreya Dhamankar</h4>
-                <p class="text-accent">Frontend Developer</p>
+                <p class="text-accent font-medium">Frontend Architect & UX Specialist</p>
               </div>
             </div>
-            <p class="text-gray-600 dark:text-gray-300">Designs and implements user interfaces with a focus on accessibility and intuitive user experiences.</p>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Dedicated to creating intuitive, accessible, and visually stunning user experiences that make technology seamlessly integrated into daily life. Shreya combines modern design principles with accessibility standards to ensure GestureText is not just functional, but truly empowering for users with diverse needs. Her expertise spans responsive design, inclusive UX, and progressive web technologies.</p>
+            <div class="mt-4 flex space-x-2">
+              <span class="px-2 py-1 bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 text-xs rounded-full">UI/UX Design</span>
+              <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 text-xs rounded-full">Accessibility</span>
+              <span class="px-2 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-xs rounded-full">Frontend</span>
+            </div>
           </div>
         </div>
         <div class="mt-8 text-center">
           <button id="closeTeamModalBtn" class="px-6 py-2 bg-accent text-white rounded-md hover:bg-blue-600 transition">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white"><i class="fas fa-cog text-accent mr-2"></i>Settings</h3>
+          <button id="closeSettingsModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Quick Settings -->
+          <div class="glass-card p-6 rounded-lg">
+            <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4"><i class="fas fa-sliders-h mr-2"></i>Quick Settings</h4>
+            <div class="space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-700 dark:text-gray-300">Hand Detection Sensitivity</span>
+                <select id="sensitivitySelect" class="glass-input px-2 py-1 text-sm">
+                  <option value="0.5">Low (0.5)</option>
+                  <option value="0.8" selected>Medium (0.8)</option>
+                  <option value="0.9">High (0.9)</option>
+                </select>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-700 dark:text-gray-300">Camera Quality</span>
+                <select id="qualitySelect" class="glass-input px-2 py-1 text-sm">
+                  <option value="720">720p (HD)</option>
+                  <option value="1080" selected>1080p (Full HD)</option>
+                  <option value="1440">1440p (2K)</option>
+                </select>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-700 dark:text-gray-300">Mirror Camera Feed</span>
+                <input id="mirrorToggle" type="checkbox" checked class="rounded glass-checkbox">
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-700 dark:text-gray-300">Auto-save Text</span>
+                <input id="autoSaveToggle" type="checkbox" class="rounded glass-checkbox">
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-700 dark:text-gray-300">Sound Feedback</span>
+                <input id="soundToggle" type="checkbox" checked class="rounded glass-checkbox">
+              </div>
+            </div>
+          </div>
+          
+          <!-- Guide Button -->
+          <div class="glass-card p-6 rounded-lg">
+            <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4"><i class="fas fa-question-circle mr-2"></i>Help & Features</h4>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Learn about all the gestures supported by GestureText and explore upcoming features.</p>
+            <div class="space-y-2">
+              <button id="gestureGuideBtn" class="w-full px-4 py-2 glass-button text-white rounded-md transition">
+                <i class="fas fa-hand-paper mr-2"></i>View Gesture Guide
+              </button>
+              <button id="featuresBtn" class="w-full px-4 py-2 glass-button-secondary rounded-md transition">
+                <i class="fas fa-lightbulb mr-2"></i>Coming Soon Features
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-6 text-center">
+          <button id="closeSettingsModalBtn" class="px-6 py-2 glass-button-secondary rounded-md transition mr-3">Close</button>
+          <button id="saveSettingsBtn" class="px-6 py-2 glass-button text-white rounded-md transition">
+            <i class="fas fa-save mr-2"></i>Save Settings
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gesture Guide Modal -->
+  <div id="gestureGuideModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white"><i class="fas fa-hand-paper text-accent mr-2"></i>Gesture Guide</h3>
+          <button id="closeGestureGuideModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        
+        <div class="mb-6">
+          <p class="text-gray-600 dark:text-gray-300">Here are all the gestures currently integrated into GestureText. Make sure your hands are clearly visible and well-lit for best results.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Hello Gesture -->
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div class="text-center mb-3">
+              <div class="w-20 h-20 mx-auto bg-accent rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-hand-paper"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Hello (Open Palm)</h4>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2"><strong>How to perform:</strong> Show your open palm with all fingers extended</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300"><strong>Output:</strong> "Hello (Open Palm)"</p>
+          </div>
+          
+          <!-- Thumbs Up -->
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div class="text-center mb-3">
+              <div class="w-20 h-20 mx-auto bg-green-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-thumbs-up"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Thumbs Up</h4>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2"><strong>How to perform:</strong> Extend only your thumb upward, keep other fingers folded</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300"><strong>Output:</strong> "Thumbs Up"</p>
+          </div>
+          
+          <!-- Fist -->
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div class="text-center mb-3">
+              <div class="w-20 h-20 mx-auto bg-red-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-fist-raised"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Fist</h4>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2"><strong>How to perform:</strong> Close all fingers into a tight fist</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300"><strong>Output:</strong> "Fist"</p>
+          </div>
+          
+          <!-- Point -->
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div class="text-center mb-3">
+              <div class="w-20 h-20 mx-auto bg-yellow-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-hand-point-up"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Point</h4>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2"><strong>How to perform:</strong> Extend only your index finger, keep others folded</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300"><strong>Output:</strong> "Point"</p>
+          </div>
+          
+          <!-- Victory -->
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div class="text-center mb-3">
+              <div class="w-20 h-20 mx-auto bg-purple-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-peace"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Victory (V)</h4>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2"><strong>How to perform:</strong> Extend index and middle fingers in a V shape</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300"><strong>Output:</strong> "Victory (V)"</p>
+          </div>
+          
+          <!-- Tips -->
+          <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
+            <div class="text-center mb-3">
+              <div class="w-20 h-20 mx-auto bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-lightbulb"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Pro Tips</h4>
+            </div>
+            <ul class="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+              <li>• Ensure good lighting</li>
+              <li>• Keep hands in frame</li>
+              <li>• Hold gesture steady</li>
+              <li>• Avoid rapid movements</li>
+              <li>• Use plain background</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="mt-6 text-center">
+          <button id="closeGestureGuideModalBtn" class="px-6 py-2 bg-accent text-white rounded-md hover:bg-blue-600 transition">Got it!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coming Soon Features Modal -->
+  <div id="featuresModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="glass-modal max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white"><i class="fas fa-rocket text-accent mr-2"></i>Coming Soon Features</h3>
+          <button id="closeFeaturesModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        
+        <div class="mb-6">
+          <p class="text-gray-600 dark:text-gray-300">Exciting new features we're working on to make GestureText even more powerful and accessible!</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Text-to-Speech -->
+          <div class="glass-card p-4 rounded-lg feature-card">
+            <div class="text-center mb-3">
+              <div class="w-16 h-16 mx-auto bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-volume-up"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Text-to-Speech</h4>
+              <span class="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded-full">In Development</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Read aloud converted text with multiple voice options and speed controls for enhanced accessibility.</p>
+          </div>
+          
+          <!-- Voice Commands -->
+          <div class="glass-card p-4 rounded-lg feature-card">
+            <div class="text-center mb-3">
+              <div class="w-16 h-16 mx-auto bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-microphone"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Voice Commands</h4>
+              <span class="text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-2 py-1 rounded-full">Planned</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Control the app with voice commands like 'start camera', 'save text', or 'read aloud'.</p>
+          </div>
+          
+          <!-- Custom Gestures -->
+          <div class="glass-card p-4 rounded-lg feature-card">
+            <div class="text-center mb-3">
+              <div class="w-16 h-16 mx-auto bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-hand-sparkles"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Custom Gestures</h4>
+              <span class="text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded-full">In Development</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Train and save your own custom gestures for personalized text shortcuts and commands.</p>
+          </div>
+          
+          <!-- Multi-language -->
+          <div class="glass-card p-4 rounded-lg feature-card">
+            <div class="text-center mb-3">
+              <div class="w-16 h-16 mx-auto bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-globe"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Multi-language Support</h4>
+              <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full">Planned</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Support for sign languages from different countries and regions with localized gesture recognition.</p>
+          </div>
+          
+          <!-- Real-time Translation -->
+          <div class="glass-card p-4 rounded-lg feature-card">
+            <div class="text-center mb-3">
+              <div class="w-16 h-16 mx-auto bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-language"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Real-time Translation</h4>
+              <span class="text-xs bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 px-2 py-1 rounded-full">Future</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Instantly translate recognized text into multiple languages for global communication.</p>
+          </div>
+          
+          <!-- Mobile App -->
+          <div class="glass-card p-4 rounded-lg feature-card">
+            <div class="text-center mb-3">
+              <div class="w-16 h-16 mx-auto bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-mobile-alt"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Mobile App</h4>
+              <span class="text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 px-2 py-1 rounded-full">In Development</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Native iOS and Android apps with offline gesture recognition and enhanced mobile features.</p>
+          </div>
+          
+          <!-- Text History -->
+          <div class="glass-card p-4 rounded-lg feature-card">
+            <div class="text-center mb-3">
+              <div class="w-16 h-16 mx-auto bg-gradient-to-r from-teal-500 to-green-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-history"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Text History</h4>
+              <span class="text-xs bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 px-2 py-1 rounded-full">Planned</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Save and search through your gesture-to-text history with smart categorization and tags.</p>
+          </div>
+          
+          <!-- Gesture Analytics -->
+          <div class="glass-card p-4 rounded-lg feature-card">
+            <div class="text-center mb-3">
+              <div class="w-16 h-16 mx-auto bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Gesture Analytics</h4>
+              <span class="text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-2 py-1 rounded-full">Future</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Track your gesture accuracy, speed improvements, and usage patterns with detailed analytics.</p>
+          </div>
+          
+          <!-- AR Integration -->
+          <div class="glass-card p-4 rounded-lg feature-card">
+            <div class="text-center mb-3">
+              <div class="w-16 h-16 mx-auto bg-gradient-to-r from-pink-500 to-violet-500 rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                <i class="fas fa-cube"></i>
+              </div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">AR Integration</h4>
+              <span class="text-xs bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 px-2 py-1 rounded-full">Future</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Augmented reality overlay for gesture recognition in real-world environments.</p>
+          </div>
+        </div>
+        
+        <div class="mt-8 text-center bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 p-6 rounded-lg">
+          <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">🎯 Our Vision</h4>
+          <p class="text-gray-600 dark:text-gray-300 mb-4">Making gesture-based communication accessible, intuitive, and universally available to break down communication barriers and empower everyone to express themselves naturally.</p>
+          <button id="closeFeaturesModalBtn" class="px-6 py-2 glass-button text-white rounded-md transition">Exciting! Can't wait!</button>
         </div>
       </div>
     </div>
